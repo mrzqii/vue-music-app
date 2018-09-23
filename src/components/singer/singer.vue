@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
-    <list-view :data="singers"></list-view>
+    <list-view @select="selectSinger" :data="singers"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -9,6 +10,7 @@ import listView from 'base/listview/listview'
 import {getSingerList} from 'api/singer'
 import {ERR_OK} from 'api/config'
 import Singer from 'common/js/singer'
+import {mapMutations} from 'vuex' //vuex自带的语法糖
 
 const HOT_SINGER_LEN = 10
 const HOT_NAME = '热门'
@@ -20,12 +22,18 @@ export default {
     }
   },
   methods:{
+    selectSinger(singer){
+      this.$router.push({
+          path: `/singer/${singer.id}`
+        })
+      this.setSinger(singer)
+    },
     _getSingerList() {
       getSingerList().then((res) => {
           if (res.code === ERR_OK) {
             this.singers = this._normalizeSinger(res.data.list)
            
-            console.log(1,this.singers)
+            // console.log(1,this.singers)
           }
         })
     },
@@ -69,7 +77,12 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0)
       })
       return hot.concat(ret)
-    }
+    },
+    // 你可以在组件中使用 this.$store.commit('xxx') 提交 mutation，或者使用 mapMutations 
+    // 辅助函数将组件中的 methods 映射为 store.commit 调用（需要在根节点注入 store）。
+    ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
   },
   created(){
     this._getSingerList()

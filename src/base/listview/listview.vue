@@ -10,7 +10,7 @@
       <li v-for="(group, index) in data" class="list-group" ref="listGroup" :key="index">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li  v-for="(item, index) in group.item" class="list-group-item" :key="index">
+          <li @click="selectItem(item)" v-for="(item, index) in group.item" class="list-group-item" :key="index">
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -95,6 +95,10 @@ export default {
       scroll(pos){
         //   pos: {x: 0, y: -799.461} 这个pos是BS里面封装的
           this.scrollY = pos.y
+      },
+    //   点击歌手名字派发事件，传递参数
+      selectItem(item){
+          this.$emit('select',item)
       },
       _scrollTo(index){
         //   这几个判断是对索引边界的判断，shuyouyouhu范畴，当索引超过范围值，就不执行

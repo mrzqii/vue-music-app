@@ -22,3 +22,35 @@ export function hasClass(el, className) {
     }
     return el.getAttribute(prefix + name)
   }
+
+  // 判断浏览器对css3属性的支持情况
+  let elementStyle = document.createElement('div').style
+  let vendor = (() => {
+    let transformNames = {
+      webkit: 'webkitTransform',
+      Moz: 'MozTransform',
+      O: 'OTransform',
+      ms: 'msTransform',
+      standard: 'transform'
+    }
+  
+    for (let key in transformNames) {
+      if (elementStyle[transformNames[key]] !== undefined) {
+        return key
+      }
+    }
+    // 如果都支持说明出现了问题，哪里有浏览器对每个前缀都支持的
+    return false
+  })()
+
+  export function prefixStyle(style) {
+    if (vendor === false) {
+      return false
+    }
+  
+    if (vendor === 'standard') {
+      return style
+    }
+  //拼成这样子： webkitTransform
+    return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+  }
